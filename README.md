@@ -1,7 +1,10 @@
-# privacyIDEA provider for Keycloak
+# eduMFA provider for Keycloak
 
-This provider allows you to use privacyIDEA's 2FA with Keycloak.  
-We added a detailed how-to on our [blog](https://community.privacyidea.org/t/how-to-use-keycloak-with-privacyidea/1132).
+This provider allows you to use eduMFA's 2FA with Keycloak.  
+
+** Note: This is a fork of privacyIDEA's keycloak provider. We aim to maintain it and make it a part of the [eduMFA](https://edumfa.io)'s ecosystem **
+
+PrivacyIDEA has an overview of a how-to on their [blog](https://community.privacyidea.org/t/how-to-use-keycloak-with-privacyidea/1132).
 
 ## Download
 
