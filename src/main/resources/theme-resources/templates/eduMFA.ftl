@@ -40,7 +40,7 @@
                         <div style="text-align: center;">
                             <img alt="qr_code" width="256" height="256" src="${tokenEnrollmentQR}">
                         </div>
-                        Please scan the QR-Code with an authenticator app like "privacyIDEA Authenticator" or "Google Authenticator"
+                        Please scan the QR-Code with an authenticator app like "eduMFA Authenticator" or "Google Authenticator"
                     </#if>
                     <script>
                         function autoSubmit(inputObject, lengthStr)
@@ -59,7 +59,7 @@
 
             <div class="${properties.kcFormGroupClass!}">
                 <div id="kc-form-options" class="${properties.kcFormOptionsClass!}">
-                    <#-- These inputs will be returned to privacyIDEAAuthenticator -->
+                    <#-- These inputs will be returned to eduMFAAuthenticator -->
                     <input id="mode" name="mode" value="${mode}" type="hidden">
                     <input id="push_available" name="push_available" value="${push_available?c}" type="hidden">
                     <input id="otp_available" name="otp_available" value="${otp_available?c}" type="hidden">
@@ -148,7 +148,7 @@
 
                             <!-- Poll in browser section. If poll in browser is enabled in config,
                                  the following script will process it in the background. -->
-                            <#if transactionID?? && !(transactionID = "") && !(piPollInBrowserUrl = "") && (pollInBrowserFailed = false)>
+                            <#if transactionID?? && !(transactionID = "") && !(emPollInBrowserUrl = "") && (pollInBrowserFailed = false)>
                                 <script>
                                     function workerError(message) {
                                         console.log("Poll in browser error: " + message);
@@ -162,12 +162,12 @@
                                         let worker;
                                         if (typeof (Worker) !== "undefined") {
                                             if (typeof (worker) == "undefined") {
-                                                worker = new Worker("${url.resourcesPath}/pi-pollTransaction.worker.js");
+                                                worker = new Worker("${url.resourcesPath}/em-pollTransaction.worker.js");
                                                 document.getElementById("kc-otp-login-form").addEventListener('submit', function (e) {
                                                     worker.terminate();
                                                     worker = undefined;
                                                 })
-                                                worker.postMessage({'cmd': 'url', 'msg': '${piPollInBrowserUrl}'});
+                                                worker.postMessage({'cmd': 'url', 'msg': '${emPollInBrowserUrl}'});
                                                 worker.postMessage({'cmd': 'transactionID', 'msg': '${transactionID}'});
                                                 worker.postMessage({'cmd': 'start'});
                                                 worker.addEventListener('message', function (e) {
@@ -228,7 +228,7 @@
                                        onclick="doWebAuthn()"
                                        type="button" value="WebAuthn"/>
 
-                                <script type="text/javascript" src="${url.resourcesPath}/pi-webauthn.js"></script>
+                                <script type="text/javascript" src="${url.resourcesPath}/em-webauthn.js"></script>
                                 <script>
                                     'use strict';
                                     if (value("webauthnsignrequest") === "") {
@@ -275,7 +275,7 @@
                                        onclick="doU2F()"
                                        type="button" value="U2F"/>
 
-                                <script type="text/javascript" src="${url.resourcesPath}/pi-u2f.js"></script>
+                                <script type="text/javascript" src="${url.resourcesPath}/em-u2f.js"></script>
 
                                 <script>
                                     'use strict';
@@ -343,7 +343,7 @@
                             </#if>
 
                             <!-- Check if the alternate token options section should be displayed -->
-                            <#if (!push_available || !(piPollInBrowserUrl! == "") && pollInBrowserFailed == false) && (u2fsignrequest == "") && (webauthnsignrequest == "")>
+                            <#if (!push_available || !(emPollInBrowserUrl! == "") && pollInBrowserFailed == false) && (u2fsignrequest == "") && (webauthnsignrequest == "")>
                                 <script>
                                     document.getElementById("alternateToken").style.display = "none";
                                 </script>

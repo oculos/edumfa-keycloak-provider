@@ -1,3 +1,6 @@
 [submodule "java-client"]
 	path = java-client
 	url = https://github.com/privacyidea/java-client
+[submodule "edumfa-java-client"]
+	path = edumfa-java-client
+	url = git@github.com:oculos/edumfa-java-client.git

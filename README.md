@@ -6,11 +6,6 @@ Note: This is a fork of privacyIDEA's keycloak provider. We aim to maintain it a
 
 PrivacyIDEA has an overview of a how-to on their [blog](https://community.privacyidea.org/t/how-to-use-keycloak-with-privacyidea/1132).
 
-## Download
-
-* Check our latest [releases](https://github.com/privacyidea/keycloak-provider/releases).
-* Download the PrivacyIDEA-Provider.jar for your keycloak version.
-
 ## Installation
 **Make sure to pick the correct jar for your keycloak version from the [releases page](https://github.com/privacyidea/keycloak-provider/releases)!**
 
@@ -19,11 +14,6 @@ PrivacyIDEA has an overview of a how-to on their [blog](https://community.privac
 * Move the jar file into the `providers` directory
 * Go to `bin` and run `kc.sh build` (or the batch file on windows)
 * Start keycloak again
-
-#### Keycloak <= 16
-* Move the packed jar file into your deployment directory `standalone/deployment`.  
-* Optional: Move the template privacyIDEA.ftl to `themes/base/login`. 
-NOTE: For releases from version 0.6 onward, the template will be deployed automatically, so this step can be skipped.
 
 Now you can enable the execution for your auth flow.  
 If you set the execution as 'required', every user needs to login with a second factor.
@@ -57,5 +47,5 @@ The different configuration parameters that are available on the configuration p
 | Enable logging             | Enable this to have the privacyIDEA Keycloak provider write log messages to the keycloak log file.                                                                                                                                                                                                                                                                                              |
 
 ## Manual build with source code
-* First, the client submodule has to be build using maven: ``mvn clean install`` in ``java-client``.
+* First, the client submodule has to be build using maven: ``mvn clean install`` in ``edumfa-java-client``.
 * Then build with ``mvn clean install`` in the provider directory and go on with **Installation**.

@@ -1,21 +1,27 @@
 /*
- * Copyright 2023 NetKnights GmbH - nils.behlen@netknights.it
- * lukas.matusiewicz@netknights.it
- * - Modified
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.privacyidea.authenticator;
+* License:  AGPLv3
+* This file is part of the eduMFA Keycloak extension. eduMFA Keycloak extension is a fork of privacyIDEA keycloak provider.
+* Copyright (c) 2024 eduMFA Project-Team
+* Previous authors of the PrivacyIDEA java client:
+*
+* NetKnights GmbH
+* nils.behlen@netknights.it
+* lukas.matusiewicz@netknights.it
+*
+* This code is free software; you can redistribute it and/or
+* modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
+* License as published by the Free Software Foundation; either
+* version 3 of the License, or any later version.
+*
+* This code is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+*
+* You should have received a copy of the GNU Affero General Public
+* License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.edumfa.authenticator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +32,8 @@ final class Const
     {
     }
 
-    static final String PROVIDER_ID = "privacyidea-authenticator";
-    static final String PLUGIN_USER_AGENT = "privacyIDEA-Keycloak";
+    static final String PROVIDER_ID = "edumfa-authenticator";
+    static final String PLUGIN_USER_AGENT = "eduMFA-Keycloak";
 
     static final String DEFAULT_PUSH_MESSAGE_EN = "Please confirm the authentication on your mobile device!";
     static final String DEFAULT_PUSH_MESSAGE_DE = "Bitte bestätigen Sie die Authentifizierung auf ihrem Smartphone!";
@@ -52,14 +58,14 @@ final class Const
     static final String FORM_POLL_IN_BROWSER_FAILED = "pollInBrowserFailed";
     static final String FORM_ERROR_MESSAGE = "errorMsg";
     static final String FORM_TRANSACTION_ID = "transactionID";
-    static final String FORM_PI_SERVER_URL = "piServerUrl";
+    static final String FORM_PI_SERVER_URL = "emServerUrl";
     static final String FORM_AUTO_SUBMIT_OTP_LENGTH = "AutoSubmitOtpLength";
-    static final String FORM_PI_POLL_IN_BROWSER_URL = "piPollInBrowserUrl";
+    static final String FORM_PI_POLL_IN_BROWSER_URL = "emPollInBrowserUrl";
     static final String FORM_PUSH_AVAILABLE = "push_available";
     static final String FORM_OTP_AVAILABLE = "otp_available";
     static final String FORM_PUSH_MESSAGE = "pushMessage";
     static final String FORM_OTP_MESSAGE = "otpMessage";
-    static final String FORM_FILE_NAME = "privacyIDEA.ftl";
+    static final String FORM_FILE_NAME = "eduMFA.ftl";
     static final String FORM_MODE_CHANGED = "modeChanged";
     static final String FORM_OTP = "otp";
     static final String FORM_UI_LANGUAGE = "uilanguage";
@@ -79,26 +85,26 @@ final class Const
     static final String AUTH_NOTE_ACCEPT_LANGUAGE = "authLanguage";
 
     // Changing the config value names will reset the current config
-    static final String CONFIG_PUSH_INTERVAL = "pipushtokeninterval";
-    static final String CONFIG_EXCLUDED_GROUPS = "piexcludegroups";
-    static final String CONFIG_INCLUDED_GROUPS = "piincludegroups";
-    static final String CONFIG_FORWARDED_HEADERS = "piforwardedheaders";
-    static final String CONFIG_ENROLL_TOKEN_TYPE = "pienrolltokentype";
-    static final String CONFIG_ENROLL_TOKEN = "pienrolltoken";
-    static final String CONFIG_DEFAULT_MESSAGE = "pidefaultmessage";
-    static final String CONFIG_POLL_IN_BROWSER = "pipollinbrowser";
-    static final String CONFIG_POLL_IN_BROWSER_URL = "pipollinbrowserurl";
-    static final String CONFIG_SEND_PASSWORD = "pisendpassword";
-    static final String CONFIG_TRIGGER_CHALLENGE = "pidotriggerchallenge";
-    static final String CONFIG_SEND_STATIC_PASS = "pisendstaticpass";
-    static final String CONFIG_OTP_LENGTH = "piotplength";
-    static final String CONFIG_SERVICE_PASS = "piservicepass";
-    static final String CONFIG_SERVICE_ACCOUNT = "piserviceaccount";
-    static final String CONFIG_SERVICE_REALM = "piservicerealm";
-    static final String CONFIG_STATIC_PASS = "pistaticpass";
-    static final String CONFIG_VERIFY_SSL = "piverifyssl";
-    static final String CONFIG_REALM = "pirealm";
-    static final String CONFIG_SERVER = "piserver";
-    static final String CONFIG_ENABLE_LOG = "pidolog";
+    static final String CONFIG_PUSH_INTERVAL = "empushtokeninterval";
+    static final String CONFIG_EXCLUDED_GROUPS = "emexcludegroups";
+    static final String CONFIG_INCLUDED_GROUPS = "emincludegroups";
+    static final String CONFIG_FORWARDED_HEADERS = "emforwardedheaders";
+    static final String CONFIG_ENROLL_TOKEN_TYPE = "emenrolltokentype";
+    static final String CONFIG_ENROLL_TOKEN = "emenrolltoken";
+    static final String CONFIG_DEFAULT_MESSAGE = "emdefaultmessage";
+    static final String CONFIG_POLL_IN_BROWSER = "empollinbrowser";
+    static final String CONFIG_POLL_IN_BROWSER_URL = "empollinbrowserurl";
+    static final String CONFIG_SEND_PASSWORD = "emsendpassword";
+    static final String CONFIG_TRIGGER_CHALLENGE = "emdotriggerchallenge";
+    static final String CONFIG_SEND_STATIC_PASS = "emsendstaticpass";
+    static final String CONFIG_OTP_LENGTH = "emotplength";
+    static final String CONFIG_SERVICE_PASS = "emservicepass";
+    static final String CONFIG_SERVICE_ACCOUNT = "emserviceaccount";
+    static final String CONFIG_SERVICE_REALM = "emservicerealm";
+    static final String CONFIG_STATIC_PASS = "emstaticpass";
+    static final String CONFIG_VERIFY_SSL = "emverifyssl";
+    static final String CONFIG_REALM = "emrealm";
+    static final String CONFIG_SERVER = "emserver";
+    static final String CONFIG_ENABLE_LOG = "emdolog";
     static final String CONFIG_PREF_TOKEN_TYPE = "preftokentype";
 }

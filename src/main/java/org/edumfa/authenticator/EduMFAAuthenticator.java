@@ -1,27 +1,27 @@
 /*
- * Copyright 2023 NetKnights GmbH - micha.preusser@netknights.it
- * nils.behlen@netknights.it
- * lukas.matusiewicz@netknights.it
- * - Modified
- * <p>
- * Based on original code:
- * <p>
- * Copyright 2016 Red Hat, Inc. and/or its affiliates
- * and other contributors as indicated by the @author tags.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.privacyidea.authenticator;
+* License:  AGPLv3
+* This file is part of the eduMFA Keycloak extension. eduMFA Keycloak extension is a fork of eduMFA keycloak provider.
+* Copyright (c) 2024 eduMFA Project-Team
+* Previous authors of the EduMFA java client:
+*
+* NetKnights GmbH
+* nils.behlen@netknights.it
+* lukas.matusiewicz@netknights.it
+*
+* This code is free software; you can redistribute it and/or
+* modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
+* License as published by the Free Software Foundation; either
+* version 3 of the License, or any later version.
+*
+* This code is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+*
+* You should have received a copy of the GNU Affero General Public
+* License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.edumfa.authenticator;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
@@ -41,82 +41,82 @@ import org.keycloak.models.GroupModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
-import org.privacyidea.Challenge;
-import org.privacyidea.IPILogger;
-import org.privacyidea.PIResponse;
-import org.privacyidea.PrivacyIDEA;
-import org.privacyidea.RolloutInfo;
-import org.privacyidea.TokenInfo;
-import org.privacyidea.U2F;
+import org.edumfa.Challenge;
+import org.edumfa.IPILogger;
+import org.edumfa.EMResponse;
+import org.edumfa.EduMFA;
+import org.edumfa.RolloutInfo;
+import org.edumfa.TokenInfo;
+import org.edumfa.U2F;
 
-import static org.privacyidea.PIConstants.PASSWORD;
-import static org.privacyidea.PIConstants.TOKEN_TYPE_PUSH;
-import static org.privacyidea.PIConstants.TOKEN_TYPE_U2F;
-import static org.privacyidea.PIConstants.TOKEN_TYPE_WEBAUTHN;
-import static org.privacyidea.authenticator.Const.AUTH_NOTE_AUTH_COUNTER;
-import static org.privacyidea.authenticator.Const.AUTH_NOTE_TRANSACTION_ID;
-import static org.privacyidea.authenticator.Const.DEFAULT_OTP_MESSAGE_DE;
-import static org.privacyidea.authenticator.Const.DEFAULT_OTP_MESSAGE_EN;
-import static org.privacyidea.authenticator.Const.DEFAULT_PUSH_MESSAGE_DE;
-import static org.privacyidea.authenticator.Const.DEFAULT_PUSH_MESSAGE_EN;
-import static org.privacyidea.authenticator.Const.FORM_ERROR;
-import static org.privacyidea.authenticator.Const.FORM_ERROR_MESSAGE;
-import static org.privacyidea.authenticator.Const.FORM_FILE_NAME;
-import static org.privacyidea.authenticator.Const.FORM_IMAGE_OTP;
-import static org.privacyidea.authenticator.Const.FORM_IMAGE_PUSH;
-import static org.privacyidea.authenticator.Const.FORM_IMAGE_WEBAUTHN;
-import static org.privacyidea.authenticator.Const.FORM_MODE;
-import static org.privacyidea.authenticator.Const.FORM_MODE_CHANGED;
-import static org.privacyidea.authenticator.Const.FORM_OTP;
-import static org.privacyidea.authenticator.Const.FORM_OTP_AVAILABLE;
-import static org.privacyidea.authenticator.Const.FORM_AUTO_SUBMIT_OTP_LENGTH;
-import static org.privacyidea.authenticator.Const.FORM_OTP_MESSAGE;
-import static org.privacyidea.authenticator.Const.FORM_PI_POLL_IN_BROWSER_URL;
-import static org.privacyidea.authenticator.Const.FORM_POLL_INTERVAL;
-import static org.privacyidea.authenticator.Const.FORM_POLL_IN_BROWSER_FAILED;
-import static org.privacyidea.authenticator.Const.FORM_PUSH_AVAILABLE;
-import static org.privacyidea.authenticator.Const.FORM_PUSH_MESSAGE;
-import static org.privacyidea.authenticator.Const.FORM_TOKEN_ENROLLMENT_QR;
-import static org.privacyidea.authenticator.Const.FORM_TRANSACTION_ID;
-import static org.privacyidea.authenticator.Const.FORM_U2F_SIGN_REQUEST;
-import static org.privacyidea.authenticator.Const.FORM_U2F_SIGN_RESPONSE;
-import static org.privacyidea.authenticator.Const.FORM_UI_LANGUAGE;
-import static org.privacyidea.authenticator.Const.FORM_WEBAUTHN_ORIGIN;
-import static org.privacyidea.authenticator.Const.FORM_WEBAUTHN_SIGN_REQUEST;
-import static org.privacyidea.authenticator.Const.FORM_WEBAUTHN_SIGN_RESPONSE;
-import static org.privacyidea.authenticator.Const.HEADER_ACCEPT_LANGUAGE;
-import static org.privacyidea.authenticator.Const.PLUGIN_USER_AGENT;
-import static org.privacyidea.authenticator.Const.TRUE;
+import static org.edumfa.EMConstants.PASSWORD;
+import static org.edumfa.EMConstants.TOKEN_TYPE_PUSH;
+import static org.edumfa.EMConstants.TOKEN_TYPE_U2F;
+import static org.edumfa.EMConstants.TOKEN_TYPE_WEBAUTHN;
+import static org.edumfa.authenticator.Const.AUTH_NOTE_AUTH_COUNTER;
+import static org.edumfa.authenticator.Const.AUTH_NOTE_TRANSACTION_ID;
+import static org.edumfa.authenticator.Const.DEFAULT_OTP_MESSAGE_DE;
+import static org.edumfa.authenticator.Const.DEFAULT_OTP_MESSAGE_EN;
+import static org.edumfa.authenticator.Const.DEFAULT_PUSH_MESSAGE_DE;
+import static org.edumfa.authenticator.Const.DEFAULT_PUSH_MESSAGE_EN;
+import static org.edumfa.authenticator.Const.FORM_ERROR;
+import static org.edumfa.authenticator.Const.FORM_ERROR_MESSAGE;
+import static org.edumfa.authenticator.Const.FORM_FILE_NAME;
+import static org.edumfa.authenticator.Const.FORM_IMAGE_OTP;
+import static org.edumfa.authenticator.Const.FORM_IMAGE_PUSH;
+import static org.edumfa.authenticator.Const.FORM_IMAGE_WEBAUTHN;
+import static org.edumfa.authenticator.Const.FORM_MODE;
+import static org.edumfa.authenticator.Const.FORM_MODE_CHANGED;
+import static org.edumfa.authenticator.Const.FORM_OTP;
+import static org.edumfa.authenticator.Const.FORM_OTP_AVAILABLE;
+import static org.edumfa.authenticator.Const.FORM_AUTO_SUBMIT_OTP_LENGTH;
+import static org.edumfa.authenticator.Const.FORM_OTP_MESSAGE;
+import static org.edumfa.authenticator.Const.FORM_PI_POLL_IN_BROWSER_URL;
+import static org.edumfa.authenticator.Const.FORM_POLL_INTERVAL;
+import static org.edumfa.authenticator.Const.FORM_POLL_IN_BROWSER_FAILED;
+import static org.edumfa.authenticator.Const.FORM_PUSH_AVAILABLE;
+import static org.edumfa.authenticator.Const.FORM_PUSH_MESSAGE;
+import static org.edumfa.authenticator.Const.FORM_TOKEN_ENROLLMENT_QR;
+import static org.edumfa.authenticator.Const.FORM_TRANSACTION_ID;
+import static org.edumfa.authenticator.Const.FORM_U2F_SIGN_REQUEST;
+import static org.edumfa.authenticator.Const.FORM_U2F_SIGN_RESPONSE;
+import static org.edumfa.authenticator.Const.FORM_UI_LANGUAGE;
+import static org.edumfa.authenticator.Const.FORM_WEBAUTHN_ORIGIN;
+import static org.edumfa.authenticator.Const.FORM_WEBAUTHN_SIGN_REQUEST;
+import static org.edumfa.authenticator.Const.FORM_WEBAUTHN_SIGN_RESPONSE;
+import static org.edumfa.authenticator.Const.HEADER_ACCEPT_LANGUAGE;
+import static org.edumfa.authenticator.Const.PLUGIN_USER_AGENT;
+import static org.edumfa.authenticator.Const.TRUE;
 
-public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Authenticator, IPILogger
+public class EduMFAAuthenticator implements org.keycloak.authentication.Authenticator, IPILogger
 {
-    private final Logger logger = Logger.getLogger(PrivacyIDEAAuthenticator.class);
+    private final Logger logger = Logger.getLogger(EduMFAAuthenticator.class);
 
-    private final ConcurrentHashMap<String, Pair> piInstanceMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Pair> emInstanceMap = new ConcurrentHashMap<>();
     private boolean logEnabled = false;
 
     /**
-     * Create new instances of PrivacyIDEA and the Configuration, if it does not exist yet.
+     * Create new instances of EduMFA and the Configuration, if it does not exist yet.
      * Also adds them to the instance map.
      *
      * @param context for authentication flow
      */
     private Pair loadConfiguration(final AuthenticationFlowContext context)
     {
-        // Get the configuration and privacyIDEA instance for the current realm
+        // Get the configuration and eduMFA instance for the current realm
         // If none is found then create a new one
         final int incomingHash = context.getAuthenticatorConfig().getConfig().hashCode();
         final String kcRealm = context.getRealm().getName();
-        final Pair currentPair = piInstanceMap.get(kcRealm);
+        final Pair currentPair = emInstanceMap.get(kcRealm);
 
         if (currentPair == null || incomingHash != currentPair.configuration().configHash())
         {
             final Map<String, String> configMap = context.getAuthenticatorConfig().getConfig();
             Configuration config = new Configuration(configMap);
             String kcVersion = Version.VERSION;
-            String providerVersion = PrivacyIDEAAuthenticator.class.getPackage().getImplementationVersion();
+            String providerVersion = EduMFAAuthenticator.class.getPackage().getImplementationVersion();
             String fullUserAgent = PLUGIN_USER_AGENT + "/" + providerVersion + " Keycloak/" + kcVersion;
-            PrivacyIDEA privacyIDEA = PrivacyIDEA.newBuilder(config.serverURL(), fullUserAgent)
+            EduMFA eduMFA = EduMFA.newBuilder(config.serverURL(), fullUserAgent)
                                                  .sslVerify(config.sslVerify())
                                                  .logger(this)
                                                  .realm(config.realm())
@@ -124,27 +124,27 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
                                                  .serviceRealm(config.serviceAccountRealm())
                                                  .build();
 
-            // Close the old privacyIDEA instance to shut down the thread pool before replacing it in the map
+            // Close the old eduMFA instance to shut down the thread pool before replacing it in the map
             if (currentPair != null)
             {
                 try
                 {
-                    currentPair.privacyIDEA().close();
+                    currentPair.eduMFA().close();
                 }
                 catch (IOException e)
                 {
-                    error("Failed to close privacyIDEA instance!");
+                    error("Failed to close eduMFA instance!");
                 }
             }
-            Pair pair = new Pair(privacyIDEA, config);
-            piInstanceMap.put(kcRealm, pair);
+            Pair pair = new Pair(eduMFA, config);
+            emInstanceMap.put(kcRealm, pair);
         }
 
-        return piInstanceMap.get(kcRealm);
+        return emInstanceMap.get(kcRealm);
     }
 
     /**
-     * This function will be called when the authentication flow triggers the privacyIDEA execution.
+     * This function will be called when the authentication flow triggers the eduMFA execution.
      * i.e. after the username + password have been submitted.
      *
      * @param context AuthenticationFlowContext
@@ -154,7 +154,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
     {
         final Pair currentPair = loadConfiguration(context);
 
-        PrivacyIDEA privacyIDEA = currentPair.privacyIDEA();
+        EduMFA eduMFA = currentPair.eduMFA();
         Configuration config = currentPair.configuration();
         logEnabled = config.doLog();
         // Get the things that were submitted in the first username+password form
@@ -198,7 +198,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
         }
 
         // Prepare for possibly triggering challenges
-        PIResponse triggerResponse = null;
+        EMResponse triggerResponse = null;
         String pushMessage = uiLanguage.equals("en") ? DEFAULT_PUSH_MESSAGE_EN : DEFAULT_PUSH_MESSAGE_DE;
         String otpMessage = uiLanguage.equals("en") ? DEFAULT_OTP_MESSAGE_EN : DEFAULT_OTP_MESSAGE_DE;
         if (!config.defaultOTPMessage().isEmpty())
@@ -225,13 +225,13 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
         // Trigger challenges if configured. Service account has precedence over send password
         if (config.triggerChallenge())
         {
-            triggerResponse = privacyIDEA.triggerChallenges(currentUser, headers);
+            triggerResponse = eduMFA.triggerChallenges(currentUser, headers);
         }
         else if (config.sendPassword())
         {
             if (currentPassword != null)
             {
-                triggerResponse = privacyIDEA.validateCheck(currentUser, currentPassword, null, headers);
+                triggerResponse = eduMFA.validateCheck(currentUser, currentPassword, null, headers);
             }
             else
             {
@@ -240,7 +240,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
         }
         else if (config.sendStaticPass())
         {
-            triggerResponse = privacyIDEA.validateCheck(currentUser, config.staticPass(), null, headers);
+            triggerResponse = eduMFA.validateCheck(currentUser, config.staticPass(), null, headers);
         }
 
         // Evaluate for possibly triggered token
@@ -266,11 +266,11 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
             // Enroll token if enabled and user does not have one. If something was triggered before, don't even try.
             if (config.enrollToken() && (triggerResponse.transactionID == null || triggerResponse.transactionID.isEmpty()))
             {
-                List<TokenInfo> tokenInfos = privacyIDEA.getTokenInfo(currentUser);
+                List<TokenInfo> tokenInfos = eduMFA.getTokenInfo(currentUser);
 
                 if (tokenInfos == null || tokenInfos.isEmpty())
                 {
-                    RolloutInfo rolloutInfo = privacyIDEA.tokenRollout(currentUser, config.enrollingTokenType());
+                    RolloutInfo rolloutInfo = eduMFA.tokenRollout(currentUser, config.enrollingTokenType());
 
                     if (rolloutInfo != null)
                     {
@@ -303,7 +303,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
     }
 
     /**
-     * This function will be called when the privacyIDEA form is submitted.
+     * This function will be called when the eduMFA form is submitted.
      *
      * @param context AuthenticationFlowContext
      */
@@ -313,17 +313,17 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
         loadConfiguration(context);
         String kcRealm = context.getRealm().getName();
 
-        PrivacyIDEA privacyIDEA;
+        EduMFA eduMFA;
         Configuration config;
-        if (piInstanceMap.containsKey(kcRealm))
+        if (emInstanceMap.containsKey(kcRealm))
         {
-            Pair pair = piInstanceMap.get(kcRealm);
-            privacyIDEA = pair.privacyIDEA();
+            Pair pair = emInstanceMap.get(kcRealm);
+            eduMFA = pair.eduMFA();
             config = pair.configuration();
         }
         else
         {
-            throw new AuthenticationFlowException("No privacyIDEA configuration found for kc-realm " + kcRealm,
+            throw new AuthenticationFlowException("No eduMFA configuration found for kc-realm " + kcRealm,
                                                   AuthenticationFlowError.IDENTITY_PROVIDER_NOT_FOUND);
         }
 
@@ -337,7 +337,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
         //logger.info("formData:");
         //formData.forEach((k, v) -> logger.info("key=" + k + ", value=" + v));
 
-        // Get data from the privacyIDEA form
+        // Get data from the eduMFA form
         String tokenEnrollmentQR = formData.getFirst(FORM_TOKEN_ENROLLMENT_QR);
         String currentMode = formData.getFirst(FORM_MODE);
         boolean pushAvailable = TRUE.equals(formData.getFirst(FORM_PUSH_AVAILABLE));
@@ -361,7 +361,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
         String u2fSignRequest = formData.getFirst(FORM_U2F_SIGN_REQUEST);
         String u2fSignResponse = formData.getFirst(FORM_U2F_SIGN_RESPONSE);
 
-        // Prepare the failure message, the message from privacyIDEA will be appended if possible
+        // Prepare the failure message, the message from eduMFA will be appended if possible
         String authenticationFailureMessage = "Authentication failed.";
 
         // Set the "old" values again
@@ -390,16 +390,16 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
         Map<String, String> headers = getHeadersToForward(context, config);
         // Do not show the error message if something was triggered
         boolean didTrigger = false;
-        PIResponse response = null;
+        EMResponse response = null;
 
-        // Send a request to privacyIDEA depending on the mode
+        // Send a request to eduMFA depending on the mode
         if (TOKEN_TYPE_PUSH.equals(currentMode))
         {
             // In push mode, poll for the transaction id to see if the challenge has been answered
-            if (privacyIDEA.pollTransaction(transactionID))
+            if (eduMFA.pollTransaction(transactionID))
             {
                 // If the challenge has been answered, finalize with a call to validate check
-                response = privacyIDEA.validateCheck(currentUserName, "", transactionID, headers);
+                response = eduMFA.validateCheck(currentUserName, "", transactionID, headers);
             }
         }
         else if (webAuthnSignResponse != null && !webAuthnSignResponse.isEmpty())
@@ -410,18 +410,18 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
             }
             else
             {
-                response = privacyIDEA.validateCheckWebAuthn(currentUserName, transactionID, webAuthnSignResponse, origin, headers);
+                response = eduMFA.validateCheckWebAuthn(currentUserName, transactionID, webAuthnSignResponse, origin, headers);
             }
         }
         else if (u2fSignResponse != null && !u2fSignResponse.isEmpty())
         {
-            response = privacyIDEA.validateCheckU2F(currentUserName, transactionID, u2fSignResponse, headers);
+            response = eduMFA.validateCheckU2F(currentUserName, transactionID, u2fSignResponse, headers);
         }
         else if (!TRUE.equals(tokenTypeChanged))
         {
             String otp = formData.getFirst(FORM_OTP);
             // If the transaction id is not present, it will be not be added in validateCheck, so no need to check here
-            response = privacyIDEA.validateCheck(currentUserName, otp, transactionID, headers);
+            response = eduMFA.validateCheck(currentUserName, otp, transactionID, headers);
         }
 
         // Evaluate the response
@@ -475,7 +475,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
         context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS, responseForm);
     }
 
-    private void extractChallengeDataToForm(PIResponse response, AuthenticationFlowContext context, Configuration config)
+    private void extractChallengeDataToForm(EMResponse response, AuthenticationFlowContext context, Configuration config)
     {
         if (context == null || config == null)
         {
@@ -570,7 +570,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
     }
 
     /**
-     * Extract the headers that should be forwarded to privacyIDEA from the original request to keycloak. The header names
+     * Extract the headers that should be forwarded to eduMFA from the original request to keycloak. The header names
      * can be defined in the configuration of this provider. The accept-language header is included by default.
      *
      * @param context AuthenticationFlowContext
@@ -628,7 +628,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
     {
         if (logEnabled)
         {
-            logger.info("PrivacyIDEA Client: " + message);
+            logger.info("EduMFA Client: " + message);
         }
     }
 
@@ -637,7 +637,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
     {
         if (logEnabled)
         {
-            logger.error("PrivacyIDEA Client: " + message);
+            logger.error("EduMFA Client: " + message);
         }
     }
 
@@ -646,7 +646,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
     {
         if (logEnabled)
         {
-            logger.info("PrivacyIDEA Client: ", t);
+            logger.info("EduMFA Client: ", t);
         }
     }
 
@@ -655,7 +655,7 @@ public class PrivacyIDEAAuthenticator implements org.keycloak.authentication.Aut
     {
         if (logEnabled)
         {
-            logger.error("PrivacyIDEA Client: ", t);
+            logger.error("EduMFA Client: ", t);
         }
     }
 }
