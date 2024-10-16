@@ -137,6 +137,7 @@
                                     // Submit the form to pass the change to the authenticator
                                     set("mode", newMode);
                                     set("modeChanged", "true");
+                                    //if (newMode == "otp"){enable("otpMessage"); enable("kc-login");} 
                                     document.forms["kc-otp-login-form"].submit();
                                 }
 
@@ -148,8 +149,9 @@
 
                             <!-- Poll in browser section. If poll in browser is enabled in config,
                                  the following script will process it in the background. -->
-                            <#if transactionID?? && !(transactionID = "") && !(emPollInBrowserUrl = "") && (pollInBrowserFailed = false)>
+                            <#if mode = "push" && transactionID?? && !(transactionID = "") && !(emPollInBrowserUrl = "") && (pollInBrowserFailed = false)>
                                 <script>
+                                    
                                     function workerError(message) {
                                         console.log("Poll in browser error: " + message);
                                         set("errorMsg", ("Poll in browser error: " + message));
@@ -159,6 +161,9 @@
 
                                     window.onload = () => {
                                         disable("pushButton");
+                                        disable("otp"); 
+                                        disable("kc-login");
+                                        //disable("otpMessage");
                                         let worker;
                                         if (typeof (Worker) !== "undefined") {
                                             if (typeof (worker) == "undefined") {
@@ -190,7 +195,7 @@
                                 </script>
                             </#if>
 
-                            <#if mode = "push">
+                            <#if mode = "push" && (!emPollInBrowserUrl?? || emPollInBrowserUrl = "")>
                             <#-- Polling for push by reloading every X seconds -->
                                 <script>
                                     disable("kc-login");

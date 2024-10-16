@@ -363,6 +363,7 @@ public class EduMFAAuthenticator implements org.keycloak.authentication.Authenti
 
         // Prepare the failure message, the message from eduMFA will be appended if possible
         String authenticationFailureMessage = "Authentication failed.";
+        
 
         // Set the "old" values again
         form.setAttribute(FORM_TOKEN_ENROLLMENT_QR, tokenEnrollmentQR)
@@ -393,7 +394,7 @@ public class EduMFAAuthenticator implements org.keycloak.authentication.Authenti
         EMResponse response = null;
 
         // Send a request to eduMFA depending on the mode
-        if (TOKEN_TYPE_PUSH.equals(currentMode))
+        if (TOKEN_TYPE_PUSH.equals(currentMode) || currentMode.equals("push"))
         {
             // In push mode, poll for the transaction id to see if the challenge has been answered
             if (eduMFA.pollTransaction(transactionID))
@@ -466,9 +467,10 @@ public class EduMFAAuthenticator implements org.keycloak.authentication.Authenti
         form.setAttribute(FORM_POLL_INTERVAL, config.pollingInterval().get(authCounter));
 
         // Do not display the error if the token type was switched or if another challenge was triggered
+        
         if (!(TRUE.equals(tokenTypeChanged)) && !didTrigger)
         {
-            form.setError(TOKEN_TYPE_PUSH.equals(currentMode) ? "Authentication not verified yet." : authenticationFailureMessage);
+            //form.setError((TOKEN_TYPE_PUSH.equals(currentMode) || currentMode.equals("push")) ? "Authentication not verified yet." : authenticationFailureMessage);
         }
 
         Response responseForm = form.createForm(FORM_FILE_NAME);
@@ -515,10 +517,14 @@ public class EduMFAAuthenticator implements org.keycloak.authentication.Authenti
         if (config.pollInBrowser())
         {
             context.form().setAttribute(FORM_TRANSACTION_ID, response.transactionID);
-            newOtpMessage = response.otpMessage() + "\n" + response.pushMessage();
             context.form()
                    .setAttribute(FORM_PI_POLL_IN_BROWSER_URL,
                                  config.pollInBrowserUrl().isEmpty() ? config.serverURL() : config.pollInBrowserUrl());
+        }
+        else{
+               
+            context.form()
+                   .setAttribute(FORM_PI_POLL_IN_BROWSER_URL,"");
         }
 
         // Check for Push
@@ -559,14 +565,14 @@ public class EduMFAAuthenticator implements org.keycloak.authentication.Authenti
         // Using poll in browser does not require push mode
         if (mode.equals("push") && config.pollInBrowser())
         {
-            mode = "otp";
+            mode = "push";
         }
-
         context.form()
                .setAttribute(FORM_MODE, mode)
                .setAttribute(FORM_WEBAUTHN_SIGN_REQUEST, webAuthnSignRequest)
                .setAttribute(FORM_U2F_SIGN_REQUEST, u2fSignRequest)
-               .setAttribute(FORM_OTP_MESSAGE, newOtpMessage);
+               .setAttribute(FORM_OTP_MESSAGE, newOtpMessage)
+               .setAttribute(FORM_PUSH_MESSAGE, response.pushMessage());
     }
 
     /**
